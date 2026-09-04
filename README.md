@@ -91,12 +91,11 @@ npm run dev
 
 ## 👥 Команда разработки
 
-| Роль | Разработчик |
-|------|-------------|
-| Team Lead & Fullstack | — |
-| Backend & DevOps | — |
-| Frontend Developer | — |
-| AI/ML Engineer | — |
+| Роль | Разработчик | юзернейм GitHab |
+|------|-------------|---------------|
+| Team Lead & Backend | Чернаков Денис | tigris8735 |
+| Frontend Developer | Бобин Вадим | MadCat-Lon |
+| AI/ML Engineer | Татаринов Вячеслав | shinsetsuwhy |
 
 ---
 
