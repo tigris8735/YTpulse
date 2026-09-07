@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
 
     if (!paymentId) return NextResponse.json({ error: 'No payment id' }, { status: 400 });
 
-    const payment = await prisma.payment.findUnique({ where: { yookassaId: paymentId } });
+    const payment = await prisma.payment.findFirst({ where: { yookassaId: paymentId } });
     if (!payment) return NextResponse.json({ error: 'Payment not found' }, { status: 404 });
 
     await prisma.payment.update({

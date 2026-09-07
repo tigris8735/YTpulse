@@ -20,7 +20,7 @@ export async function generateThumbnailText(trendTitle: string): Promise<string[
         { headers: { Authorization: `Bearer ${GROQ_KEY}` }, timeout: 15000 }
       );
       const content = res.data.choices[0].message.content;
-      const match = content.match(/\[.*?\]/s);
+      const match = content.match(/\[[\s\S]*?\]/); 
       if (match) return JSON.parse(match[0]);
     } catch (e) {
       console.warn('[AI] Groq failed, trying Gemini');
@@ -35,7 +35,7 @@ export async function generateThumbnailText(trendTitle: string): Promise<string[
         { timeout: 15000 }
       );
       const content = res.data.candidates[0].content.parts[0].text;
-      const match = content.match(/\[.*?\]/s);
+      const match = content.match(/\[[\s\S]*?\]/);
       if (match) return JSON.parse(match[0]);
     } catch (e) {
       console.warn('[AI] Gemini failed');
