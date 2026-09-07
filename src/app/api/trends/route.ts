@@ -44,11 +44,11 @@ export async function GET(req: NextRequest) {
       ...v,
       viewCountFormatted: formatViews(v.viewCount),
       durationFormatted: formatDuration(v.duration),
-      scoreSum: tagMap.get(v.id)?.scoreSum ?? 0,
+      scoreSum: (tagMap.get(v.id)?.scoreSum as number | undefined) ??   0,
       tags: tagMap.get(v.id) ?? null,
     }));
 
-    enriched.sort((a: any, b: any) => b.scoreSum - a.scoreSum);
+    enriched.sort((a: any, b: any) => (b.scoreSum  as number ) - (a.scoreSum - a.scoreSum));
     return NextResponse.json({ videos: enriched, cached: !force && cacheValid });
   } catch (e) {
     console.error('[API] Trends error:', e);
