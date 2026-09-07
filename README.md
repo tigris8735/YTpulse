@@ -1,104 +1,92 @@
-# 🎬 YT Pulse - SaaS для авторов YouTube
+# 🎬 YT Pulse
 
-![Next.js](https://img.shields.io/badge/Next.js-Frontend-black.svg)
-![Vercel](https://img.shields.io/badge/Vercel-Hosting-black.svg)
-![Neon](https://img.shields.io/badge/Neon-PostgreSQL-blue.svg)
-![YouTube](https://img.shields.io/badge/YouTube_Data_API-v3-red.svg)
-
-**Веб-сервис для анализа американских трендов YouTube, разбора кликабельности превью и генерации контента**
-
-## 📋 О проекте
-
-YT Pulse — это прототип SaaS-платформы для авторов YouTube, который помогает:
-- 📈 Мониторить американские тренды (US `mostPopular`) с 6 фильтрами
-- 🔍 Анализировать кликабельность чужих превью через локальные алгоритмы (MediaPipe + OpenCV)
-- 🎨 Генерировать паки превью на основе трендов (только Pro)
-- 🎬 Создавать задачи на генерацию роликов (только Pro)
-
-Проект реализован как прототип: хостинг Vercel Hobby, база Neon free, оплата через ЮKassa Test (без реальных списаний).
-
-## 🚀 Основные возможности
-
-- 📈 **Лента трендов США** — актуальные ролики из `mostPopular` (регион US)
-- 🔍 **Why it clicks** — локальный разбор превью: лицо, контраст, текстовая зона
-- 🎨 **Генерация превью** — AI-текст (Groq/Gemini) + AI-изображение (Pollinations/Gemini Flash), 3 варианта
-- 🎬 **Очередь ролика** — создание задач на генерацию видео со статусами
-- 💳 **Тарифы Free / Pro** — тестовая оплата через ЮKassa, автопродления нет
-- 🏠 **Личный кабинет** — профиль, подписка, возможности, история платежей
-
-## 🏗 Архитектура
-
-```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Next.js       │◄──►│   Vercel         │◄──►│   YouTube Data  │
-│   Web Client    │    │   Serverless API │    │   API v3        │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-                                │
-           ┌────────────────────┼────────────────────┐
-           ▼                    ▼                    ▼
-    ┌─────────────┐    ┌──────────────┐    ┌─────────────────┐
-    │   Neon      │    │   Groq /     │    │   Pollinations  │
-    │   PostgreSQL│    │   Gemini     │    │   / Gemini Flash│
-    └─────────────┘    └──────────────┘    └─────────────────┘
-           │
-    ┌─────────────┐
-    │ OpenCV +    │
-    │ MediaPipe   │
-    └─────────────┘
-```
+**SaaS-прототип для авторов YouTube** — американские тренды, разбор превью, генерация контента.
 
 ## ⚡ Быстрый старт
 
 ```bash
-# Клонирование репозитория
-git clone https://github.com/yourusername/yt-pulse.git
+# 1. Распакуйте архив
 cd yt-pulse
 
-# Установка зависимостей
+# 2. Установите зависимости
 npm install
 
-# Настройка переменных окружения
+# 3. Скопируйте и заполните .env
 cp .env.example .env
-# Заполните: DATABASE_URL (Neon), YOUTUBE_API_KEY, GROQ_API_KEY, etc.
+# Отредактируйте .env — вставьте свои ключи
 
-# Генерация Prisma клиента
+# 4. Инициализируйте БД
 npx prisma generate
+npx prisma migrate dev --name init
+npm run db:seed
 
-# Запуск dev-сервера
+# 5. Запустите
 npm run dev
+# Откройте http://localhost:3000
 ```
 
-## 📖 Документация
+## 🔑 Необходимые API-ключи
 
-Полная документация проекта доступна в папке [docs/](./documentation/):
+| Переменная | Где получить |
+|------------|--------------|
+| `DATABASE_URL` | [neon.tech](https://neon.tech) — Connection string |
+| `NEXTAUTH_SECRET` | `openssl rand -base64 32` |
+| `YOUTUBE_API_KEY` | [Google Cloud Console](https://console.cloud.google.com/) → YouTube Data API v3 |
+| `GROQ_API_KEY` | [console.groq.com/keys](https://console.groq.com/keys) |
+| `GEMINI_API_KEY` | [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) |
+| `YOOKASSA_SHOP_ID` | [yookassa.ru/developers](https://yookassa.ru/developers/) — тестовый кабинет |
+| `YOOKASSA_SECRET_KEY` | Там же |
 
-- [Бизнес-требования](./documentation/br01.md)
-- [Системный анализ](./documentation/sa02.md)
-- [План архитектуры](./documentation/ap03.md)
-- [Техническое задание](./documentation/tt04.md)
-- [План тестирования](./documentation/tp05.md)
+## 🏗 Структура проекта
 
-## 🛠 Технологический стек
+```
+yt-pulse/
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── (auth)/             # Вход / Регистрация
+│   │   ├── (dashboard)/        # Кабинет (тренды, превью, генерация, очередь)
+│   │   ├── api/                # API Routes (13 эндпоинтов)
+│   │   └── payments/           # Экраны оплаты
+│   ├── components/
+│   │   ├── layout/             # Sidebar, TopBar, BottomBar
+│   │   ├── ui/                 # VideoCard, FilterChips, ProLock, Button
+│   │   └── features/           # TrendRail, PreviewList, PreviewTags
+│   ├── hooks/                  # useAuth, useUser, useTrends
+│   ├── lib/
+│   │   ├── db/                 # Prisma client
+│   │   ├── auth/               # JWT, bcrypt, isPro
+│   │   ├── services/           # YouTube, Analyzer, AI, Payment
+│   │   └── utils/              # helpers (cn)
+│   ├── types/                  # TypeScript interfaces
+│   └── config/                 # site.ts (filters, plans, tags)
+├── prisma/                     # Схема БД + seed
+├── analyzer/                   # Python FastAPI (опционально)
+├── public/                     # Статика
+└── [конфиги]                   # next.config, tailwind, middleware
+```
 
-- **Frontend**: Next.js, React, TailwindCSS
-- **Backend**: Next.js API Routes (Vercel Serverless)
-- **Database**: Neon.tech PostgreSQL (Prisma ORM)
-- **AI Текст**: Groq API, Google Gemini API
-- **AI Изображения**: Pollinations API, Gemini Flash Image
-- **Анализ превью**: MediaPipe Face Detection, OpenCV
-- **Платежи**: ЮKassa Test
-- **Видео** (опционально): FFmpeg, Luma Ray API, fal.ai
+## 🚀 Деплой на Vercel
 
-## 👥 Команда разработки
+1. Запушьте на GitHub
+2. Импортируйте на [vercel.com](https://vercel.com)
+3. Добавьте переменные окружения из `.env.example`
+4. Деплой автоматический из `main`
 
-| Роль | Разработчик | юзернейм GitHab |
-|------|-------------|---------------|
-| Team Lead & Backend | Чернаков Денис | tigris8735 |
-| Frontend Developer | Бобин Вадим | MadCat-Lon |
-| AI/ML Engineer | Татаринов Вячеслав | shinsetsuwhy |
+**Важно:** API-ключи только в Vercel Environment Variables, **не в репозитории**.
+
+## ✅ Реализовано по ТЗ
+
+- [x] Авторизация (регистрация/вход, JWT, middleware)
+- [x] Лента трендов US (YouTube API, 6 фильтров, кэш Neon)
+- [x] Разбор превью (Sharp fallback + опциональный Python MediaPipe/OpenCV)
+- [x] 3 тега Why it clicks + score_sum 0-4
+- [x] Генерация превью (Groq/Gemini + Pollinations, 3 варианта)
+- [x] Замок для Free + Pro проверка
+- [x] Очередь ролика (статусы queued→rendering→ready, заглушка)
+- [x] Личный кабинет (4 вкладки)
+- [x] Тарифы Free/Pro + ЮKassa Test
+- [x] UI по макетам ТЗ (тёмная тема, сайдбар 228px, рельс 320px, нижний бар 72px)
 
 ---
 
-*Документация подготовлена для проекта YT Pulse*
-
----
+*Проект подготовлен в соответствии с ТЗ YT Pulse v1.0*
