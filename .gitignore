@@ -34,3 +34,6 @@ next-env.d.ts
 /analyzer/venv
 /analyzer/__pycache__
 *.pyc
+
+.vercel
+.env*

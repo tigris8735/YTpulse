@@ -1,12 +1,23 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { PreviewList } from '@/components/features/PreviewList';
 import { PreviewTagsPanel } from '@/components/features/PreviewTags';
 import type { YouTubeVideo, PreviewTags } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 export default function PreviewPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-full">Loading...</div>}>
+      <PreviewPageContent />
+    </Suspense>
+  );
+}
+
+function PreviewPageContent() {
   const searchParams = useSearchParams();
   const videoId = searchParams.get('video');
 

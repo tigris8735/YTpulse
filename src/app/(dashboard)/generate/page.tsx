@@ -1,5 +1,5 @@
 'use client';
-
+import { Suspense } from 'react';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ProLock } from '@/components/ui/ProLock';
@@ -7,7 +7,17 @@ import { useAuth } from '@/hooks/useAuth';
 import { Wand2, Loader2, Check } from 'lucide-react';
 import type { ThumbnailVariant } from '@/types';
 
+export const dynamic = 'force-dynamic';
+
 export default function GeneratePage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-full"><Loader2 className="w-8 h-8 animate-spin text-accent" /></div>}>
+      <GeneratePageContent />
+    </Suspense>
+  );
+}
+
+function GeneratePageContent() {
   const searchParams = useSearchParams();
   const videoId = searchParams.get('video');
   const { user, loading: authLoading, isPro } = useAuth();
