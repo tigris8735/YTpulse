@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
         body: JSON.stringify({ videoIds: videos.map((v: any) => v.id) }),
       }).catch(() => {});
     }
-
+    
     const videoIds = videos.map((v: any) => v.id);
     const tags = await prisma.previewTags.findMany({ where: { videoId: { in: videoIds } } });
     const tagMap = new Map(tags.map((t) => [t.videoId, t]));

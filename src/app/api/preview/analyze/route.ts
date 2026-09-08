@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       where: { videoId: { in: videoIds } },
       select: { videoId: true },
     });
-    const existingSet = new Set(existing.map( (e)  => e.videoId));
+    const existingSet = new Set(existing.map( (e : any)  => e.videoId));
     const toAnalyze = videoIds.filter((id) => !existingSet.has(id));
 
     const results = [];
